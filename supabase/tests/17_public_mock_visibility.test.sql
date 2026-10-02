@@ -1,0 +1,12 @@
+begin;
+insert into public.companies(id,name,slug,status) values('17000000-0000-0000-0000-000000000001','Private company','private-company-fixture','draft');
+insert into public.mock_tests(id,company_id,title,slug,duration_minutes,status) values('17100000-0000-0000-0000-000000000001','17000000-0000-0000-0000-000000000001','Private-company mock','private-company-mock',15,'published'),('17100000-0000-0000-0000-000000000002',null,'Independent mock','independent-mock-fixture',15,'published');
+set local role anon;
+select t.eq((select count(*) from public.published_mock_tests where id='17100000-0000-0000-0000-000000000001'),0::bigint,'draft company hides public mock metadata');
+select t.eq((select count(*) from public.published_mock_tests where id='17100000-0000-0000-0000-000000000002'),1::bigint,'company-free mock stays public');
+reset role;
+update public.companies set status='published' where id='17000000-0000-0000-0000-000000000001';
+set local role anon;
+select t.eq((select count(*) from public.published_mock_tests where id='17100000-0000-0000-0000-000000000001'),1::bigint,'published company reveals public mock metadata');
+reset role;
+rollback;

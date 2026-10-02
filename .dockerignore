@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.github
+.env*
+!.env.example
+coverage
+tests
+supabase/tests
+docs
+*.md
+*.tsbuildinfo
+next-env.d.ts
+Dockerfile
+.dockerignore

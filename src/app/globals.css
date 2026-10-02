@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  /* Core palette -- see design notes in Phase 1 chat for rationale */
+  --color-paper: #f4f6f7;   /* page background: cool pale paper, not warm cream */
+  --color-ink: #14213d;     /* primary text + dark surfaces: deep navy */
+  --color-accent: #e8a33d;  /* marigold amber: primary actions + progress only */
+  --color-focus: #96701f;  /* keyboard focus: contrast on both paper and navy */
+  --color-line: #c9cdd3;    /* hairline rule / border grey */
+  --color-success: #2f6d4f; /* correct answers, positive progress */
+  --color-danger: #b3261e;  /* incorrect answers, destructive actions */
+
+  --font-serif: "Newsreader", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-ink: var(--color-ink);
+  --color-accent: var(--color-accent);
+  --color-line: var(--color-line);
+  --color-success: var(--color-success);
+  --color-danger: var(--color-danger);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Visible keyboard focus everywhere -- accessibility floor, not optional */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

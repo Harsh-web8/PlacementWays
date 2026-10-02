@@ -1,0 +1,4 @@
+import Link from "next/link";
+import {listPosts} from "@/server/blog";
+export const metadata={title:"Preparation guides"};
+export default async function Page({searchParams}:PageProps<"/blog">){const sp=await searchParams;const page=Math.min(10000,Math.max(1,Math.floor(Number(sp.page)||1)));const {posts,total}=await listPosts(page);return <div className="mx-auto max-w-4xl space-y-8 px-6 py-12"><h1 className="font-serif text-4xl">Preparation guides</h1>{!posts.length&&<p>Guides will appear here when published.</p>}<ul className="space-y-7">{posts.map(p=><li key={p.id} className="border-b pb-6"><h2 className="font-serif text-2xl"><Link className="underline" href={`/blog/${p.slug}`}>{p.title}</Link></h2><p className="mt-3">{p.description}</p></li>)}</ul><nav className="flex justify-between"><span>{page>1&&<Link href={`?page=${page-1}`}>Previous</Link>}</span><span>{page*12<total&&<Link href={`?page=${page+1}`}>Next</Link>}</span></nav></div>;}
