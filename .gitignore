@@ -1,0 +1,29 @@
+# Credentials and local deployment links
+.env*
+!.env.example
+.npmrc
+*.pem
+*.key
+*.p12
+*.pfx
+.vercel/
+.supabase/
+**/supabase/.temp/
+**/supabase/.branches/
+
+# Dependencies, local test tools, and build output
+node_modules/
+.milestone8-runtime/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+*.log
+
+# Local database files and backups
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.sql.gz

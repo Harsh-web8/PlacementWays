@@ -1,0 +1,56 @@
+name: placementways-staging
+
+services:
+  web:
+    image: placementways-staging:${STAGING_IMAGE_TAG:-local}
+    build:
+      context: .
+      args:
+        DEPLOYMENT_ENV: staging
+        NEXT_PUBLIC_SITE_URL: https://${STAGING_HOST:?Set the isolated staging hostname}
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:?Set the staging Supabase HTTPS URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:?Set the staging publishable key}
+    env_file: .env.staging.web
+    environment:
+      DEPLOYMENT_ENV: staging
+      NEXT_PUBLIC_SITE_URL: https://${STAGING_HOST}
+      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      GUEST_TRUSTED_IP_HEADER: x-placementways-visitor-ip
+      PLACEMENTWAYS_ENABLE_COMMERCE: 'false'
+      STRIPE_LIVE_MODE: 'false'
+      ALLOW_LOCAL_SERVICES: 'false'
+    restart: unless-stopped
+
+  worker:
+    image: placementways-staging:${STAGING_IMAGE_TAG:-local}
+    pull_policy: never
+    command: ["node", "scripts/coding-worker.mjs"]
+    env_file: .env.staging.worker
+    environment:
+      DEPLOYMENT_ENV: staging
+      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+      ALLOW_LOCAL_SERVICES: 'false'
+    healthcheck:
+      disable: true
+    restart: unless-stopped
+
+  ingress:
+    image: caddy:2-alpine
+    environment:
+      STAGING_HOST: ${STAGING_HOST}
+    depends_on:
+      web:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile.staging:/etc/caddy/Caddyfile:ro
+      - tls-data:/data
+      - tls-config:/config
+    restart: unless-stopped
+
+volumes:
+  tls-data:
+  tls-config:

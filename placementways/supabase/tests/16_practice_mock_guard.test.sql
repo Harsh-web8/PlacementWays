@@ -1,0 +1,13 @@
+begin;
+insert into auth.users(id,email) values('16000000-0000-0000-0000-000000000001','practice-guard@example.test');
+select set_config('request.jwt.claims','{"sub":"16000000-0000-0000-0000-000000000001","role":"authenticated"}',true);
+set local role authenticated;
+select set_config('t.active_mock',public.start_test_attempt((select id from public.mock_tests where slug='cognizant-genc-foundations-checkpoint'))::text,true);
+reset role;
+select set_config('t.active_question',(select question_id::text from public.test_questions where test_id=(select id from mock_tests where slug='cognizant-genc-foundations-checkpoint') order by question_order limit 1),true);
+set local role authenticated;
+select t.throws(format('select public.submit_practice(%L,%L)',current_setting('t.active_question'),'A'),'23514','active mock cannot disclose solution through practice');
+select public.submit_attempt(current_setting('t.active_mock')::uuid);
+select t.eq(public.submit_practice(current_setting('t.active_question')::uuid,'A') is not null,true,'practice resumes after mock submission');
+reset role;
+rollback;

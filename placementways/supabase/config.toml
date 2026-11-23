@@ -1,0 +1,5 @@
+# Supabase CLI configuration. The hosted project is selected explicitly with supabase link.
+project_id = "placementways"
+
+[db.seed]
+enabled = false
