@@ -11,7 +11,7 @@
 #     --build-arg DEPLOYMENT_ENV=production -t placementways .
 # Never pass SUPABASE_SERVICE_ROLE_KEY or other secrets as build args; set them at runtime.
 
-FROM node:24-bookworm-slim AS deps
+FROM node:26-bookworm-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
@@ -29,7 +29,7 @@ ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL \
 COPY . .
 RUN npm run build
 
-FROM node:24-bookworm-slim AS runtime
+FROM node:26-bookworm-slim AS runtime
 # The recruitment monitor supports text-based official PDF notices using poppler.
 # Keep this isolated behind the admin-only scheduled scanner; it is never exposed as a public PDF conversion service.
 RUN apt-get update && apt-get install -y --no-install-recommends poppler-utils ca-certificates \
